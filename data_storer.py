@@ -2,8 +2,14 @@ import sqlite3
 import pandas as pd
 
 # Function to create the events table if it does not exist
-def create_table():
-    conn = sqlite3.connect('economic_events.db')
+def create_table(db_name='economic_events.db'):
+    """
+    Create the events table if it does not exist.
+
+    Parameters:
+    db_name (str): The name of the database file. Default is 'economic_events.db'.
+    """
+    conn = sqlite3.connect(db_name)
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS events
                  (Date TEXT, Time TEXT, Currency TEXT, Volatility TEXT, Event TEXT, Forecast TEXT, Previous TEXT)''')
@@ -11,8 +17,15 @@ def create_table():
     conn.close()
 
 # Function to store events in the database
-def store_events(events):
-    conn = sqlite3.connect('economic_events.db')
+def store_events(events, db_name='economic_events.db'):
+    """
+    Store events in the database.
+
+    Parameters:
+    events (list of dict): A list of events, where each event is a dictionary containing event details.
+    db_name (str): The name of the database file. Default is 'economic_events.db'.
+    """
+    conn = sqlite3.connect(db_name)
     c = conn.cursor()
     
     # Add only new events
@@ -27,8 +40,17 @@ def store_events(events):
     conn.close()
 
 # Function to retrieve events from the database
-def get_events():
-    conn = sqlite3.connect('economic_events.db')
+def get_events(db_name='economic_events.db'):
+    """
+    Retrieve events from the database.
+
+    Parameters:
+    db_name (str): The name of the database file. Default is 'economic_events.db'.
+
+    Returns:
+    pandas.DataFrame: A DataFrame containing all events from the database.
+    """
+    conn = sqlite3.connect(db_name)
     df = pd.read_sql_query('SELECT * FROM events', conn)
     conn.close()
     return df

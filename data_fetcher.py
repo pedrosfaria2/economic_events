@@ -2,16 +2,14 @@ import httpx
 from bs4 import BeautifulSoup
 from datetime import datetime
 
-# Function to fetch data from the provided URL with specified headers, cookies, and data
 def fetch_data(url, headers, cookies, data):
-    with httpx.Client(follow_redirects=True) as client:
-        response = client.post(url, headers=headers, cookies=cookies, data=data)
+    with httpx.Client(follow_redirects=True, cookies=cookies) as client:
+        response = client.post(url, headers=headers, data=data)
         if response.status_code == 200:
             return response.json().get('data')
         print(f"Failed to get data: {response.status_code}")
         return None
 
-# Function to extract volatility level from the HTML cell content
 def extract_volatility(cell_html):
     if 'High Volatility Expected' in cell_html:
         return 'High'
@@ -21,13 +19,11 @@ def extract_volatility(cell_html):
         return 'Low'
     return None
 
-# Function to parse HTML content and extract economic events
 def parse_html(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
     events = []
     current_date = None
 
-    # Loop through all rows and cells with specified classes
     for row in soup.find_all(['tr', 'td'], {'class': ['js-event-item', 'theDay']}):
         if 'theDay' in row.get('class', []):
             current_date = row.get_text(strip=True)
@@ -46,7 +42,6 @@ def parse_html(html_content):
             events.append(event)
     return events
 
-# Function to fetch economic events for the current and next week
 def fetch_economic_events():
     url = "https://www.investing.com/economic-calendar/Service/getCalendarFilteredData"
     headers = {
@@ -109,7 +104,6 @@ def fetch_economic_events():
         "pm_score": "clear",
     }
 
-    # Data payload for fetching events for this week
     data_this_week = {
         "country[]": [
             "25", "32", "6", "37", "72", "22", "17", "39", "14", "10",
@@ -121,7 +115,6 @@ def fetch_economic_events():
         "limit_from": "0"
     }
 
-    # Data payload for fetching events for next week
     data_next_week = {
         "country[]": [
             "25", "32", "6", "37", "72", "22", "17", "39", "14", "10",
@@ -133,15 +126,12 @@ def fetch_economic_events():
         "limit_from": "0"
     }
 
-    # Fetching data for this week and next week
     html_this_week = fetch_data(url, headers, cookies, data_this_week)
     html_next_week = fetch_data(url, headers, cookies, data_next_week)
 
-    # Parsing the fetched HTML content
     events_this_week = parse_html(html_this_week) if html_this_week else []
     events_next_week = parse_html(html_next_week) if html_next_week else []
 
-    # Combining events from this week and next week
     all_events = events_this_week + events_next_week
 
     return all_events

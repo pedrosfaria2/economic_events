@@ -30,19 +30,13 @@ This project is a web scraping application built with Streamlit, designed to dem
 
 ## Usage
 
-1. Fetch and store economic events data:
-
-    ```bash
-    python fetch_store_data.py
-    ```
-
-2. Run the Streamlit application:
+1. Run the Streamlit application:
 
     ```bash
     streamlit run app.py
     ```
 
-3. Open your web browser and go to `http://localhost:8501` to view the application.
+2. Open your web browser and go to `http://localhost:8501` to view the application.
 
 ## Project Structure
 

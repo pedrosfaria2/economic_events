@@ -75,23 +75,23 @@ This project is a web scraping application built with Streamlit, designed to dem
 The benchmark tests measure the performance of key functions in the application. Here are the results:
 
 ### `send_email`
-- **Time**: Approximately 435 microseconds
-- **Operations per Second (OPS)**: ~2297 operations per second
+- **Time**: Approximately 567.1 microseconds
+- **Operations per Second (OPS)**: ~1763 operations per second
 - **Consistency**: Very consistent with no outliers detected
 
 ### `store_events`
-- **Time**: Mean of 2447.7 microseconds
-- **Operations per Second (OPS)**: ~408 operations per second
+- **Time**: Mean of 180.1895 microseconds
+- **Operations per Second (OPS)**: ~5549 operations per second
 - **Consistency**: Some variability with outliers detected
 
 ### `get_events`
-- **Time**: Mean of 3594.8 microseconds
-- **Operations per Second (OPS)**: ~278 operations per second
+- **Time**: Mean of 725.5073 microseconds
+- **Operations per Second (OPS)**: ~1378 operations per second
 - **Consistency**: Some variability with outliers detected
 
 ### `fetch_economic_events`
-- **Time**: Mean of 6.78 seconds
-- **Operations per Second (OPS)**: ~0.1476 operations per second
+- **Time**: Mean of 1.648 seconds
+- **Operations per Second (OPS)**: ~0.6067 operations per second
 - **Consistency**: Higher variability due to network latency and response times
 
 These results show that while `fetch_economic_events` is the most time-consuming operation due to its reliance on network requests, other operations like `send_email`, `store_events`, and `get_events` perform efficiently. The presence of outliers in `store_events` and `get_events` suggests potential areas for optimization.

@@ -2,14 +2,15 @@ import pytest
 import sqlite3
 from data_storer import create_table, store_events, get_events
 
+# Define the name of the test database
 TEST_DB = 'test_economic_events.db'
 
 def setup_module(module):
-    """ setup any state specific to the execution of the given module."""
+    """Setup any state specific to the execution of the given module."""
     create_table(TEST_DB)
 
 def teardown_function(function):
-    """ clean up after each test function """
+    """Clean up after each test function."""
     conn = sqlite3.connect(TEST_DB)
     c = conn.cursor()
     c.execute('DELETE FROM events')
@@ -17,6 +18,7 @@ def teardown_function(function):
     conn.close()
 
 def test_store_and_get_events():
+    # Define a list of test events
     test_events = [
         {
             'Date': '12/25/23',
@@ -28,12 +30,17 @@ def test_store_and_get_events():
             'Previous': '100'
         }
     ]
+    # Store the test events in the database
     store_events(test_events, TEST_DB)
+    # Retrieve the events from the database
     events = get_events(TEST_DB)
+    
+    # Ensure the retrieved DataFrame is not empty
     assert not events.empty
+    # Ensure there is at least one event in the DataFrame
     assert len(events) > 0
     
-    # Verifica se o evento armazenado corresponde ao evento de teste
+    # Check if the stored event matches the test event
     event = events[(events['Date'] == '12/25/23') & 
                    (events['Time'] == '08:30') & 
                    (events['Currency'] == 'USD') & 

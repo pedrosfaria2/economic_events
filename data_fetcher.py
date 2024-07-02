@@ -3,6 +3,9 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 def fetch_data(url, headers, cookies, data):
+    """
+    Function to fetch data from a given URL using POST request with specified headers, cookies, and data.
+    """
     with httpx.Client(follow_redirects=True, cookies=cookies) as client:
         response = client.post(url, headers=headers, data=data)
         if response.status_code == 200:
@@ -11,6 +14,9 @@ def fetch_data(url, headers, cookies, data):
         return None
 
 def extract_volatility(cell_html):
+    """
+    Function to extract the volatility level from the HTML content of a cell.
+    """
     if 'High Volatility Expected' in cell_html:
         return 'High'
     if 'Moderate Volatility Expected' in cell_html:
@@ -20,6 +26,9 @@ def extract_volatility(cell_html):
     return None
 
 def parse_html(html_content):
+    """
+    Function to parse the HTML content and extract economic event data.
+    """
     soup = BeautifulSoup(html_content, 'html.parser')
     events = []
     current_date = None
@@ -43,6 +52,9 @@ def parse_html(html_content):
     return events
 
 def fetch_economic_events():
+    """
+    Function to fetch economic events for the current and next week from the Investing.com economic calendar.
+    """
     url = "https://www.investing.com/economic-calendar/Service/getCalendarFilteredData"
     headers = {
         "Accept": "*/*",
@@ -126,12 +138,15 @@ def fetch_economic_events():
         "limit_from": "0"
     }
 
+    # Fetch data for this week and next week
     html_this_week = fetch_data(url, headers, cookies, data_this_week)
     html_next_week = fetch_data(url, headers, cookies, data_next_week)
 
+    # Parse the HTML content to extract events
     events_this_week = parse_html(html_this_week) if html_this_week else []
     events_next_week = parse_html(html_next_week) if html_next_week else []
 
+    # Combine events from both weeks
     all_events = events_this_week + events_next_week
 
     return all_events

@@ -2,7 +2,10 @@ import sqlite3
 import pytest
 from data_fetcher import fetch_economic_events
 from data_storer import create_table, store_events, get_events
-from email_sender import send_email
+import platform
+
+if platform.system() == "Windows":
+    from email_sender import send_email
 
 # Define the name of the test database
 TEST_DB = 'test_economic_events.db'
@@ -50,6 +53,7 @@ def test_integration_fetch_store_get():
     assert not retrieved_events.empty
     assert len(retrieved_events) > 0
 
+@pytest.mark.skipif(platform.system() != "Windows", reason="Email sending is only supported on Windows.")
 def test_integration_fetch_store_send_email(mocker):
     """
     Integration test to fetch economic events, store them in the database, retrieve them, and send an email.

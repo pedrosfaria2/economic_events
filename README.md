@@ -6,7 +6,7 @@ This project is a web scraping application built with Streamlit, designed to dem
 
 - **Fetch and Store Data**: Fetch economic events data from the web and store it in a SQLite database.
 - **View Stored Data**: View and filter stored economic events data in a tabular format.
-- **Send Email**: Send an email with today's economic events, including the option to customize the recipient, subject, and message.
+- **Send Email**: Send an email with today's economic events, including the option to customize the recipient, subject, and message. **Note: This feature is only supported on Windows.**
 - **Automated Testing**: Unit, integration, and performance tests to ensure the reliability and correctness of the application.
 - **Benchmarking**: Performance benchmarking to measure and optimize the performance of various application components.
 
@@ -33,6 +33,18 @@ This project is a web scraping application built with Streamlit, designed to dem
     venv\Scripts\activate
     ```
 
+    Install the required packages:
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+    Install additional packages for Windows:
+
+    ```bash
+    pip install -r requirements-dev.txt
+    ```
+
     ### On macOS and Linux
 
     ```bash
@@ -40,7 +52,7 @@ This project is a web scraping application built with Streamlit, designed to dem
     source venv/bin/activate
     ```
 
-3. Install the required packages:
+    Install the required packages:
 
     ```bash
     pip install -r requirements.txt
@@ -64,7 +76,7 @@ This project is a web scraping application built with Streamlit, designed to dem
     pytest
     ```
 
-    This will execute all the tests located in the `tests` directory.
+    This will execute all the tests located in the `tests` directory. **Note: Tests involving email sending are only supported on Windows.**
 
 2. To run the benchmark tests, use:
 
@@ -107,6 +119,7 @@ These results show that while `fetch_economic_events` is the most time-consuming
 - `data_storer.py`: Contains functions to store and retrieve data from the SQLite database.
 - `email_sender.py`: Contains functions to send emails with economic events data.
 - `requirements.txt`: Lists all the required Python packages.
+- `requirements-dev.txt`: Lists additional packages required for Windows.
 - `README.md`: Provides an overview of the project and instructions for setup and usage.
 - `tests/`: Directory containing unit, integration, performance, and benchmark tests for the application.
 
@@ -116,7 +129,7 @@ This project serves as an example of how to combine various Python functionaliti
 - **Web Scraping**: Using `httpx` and `BeautifulSoup` to fetch and parse data from websites.
 - **Data Storage**: Using `sqlite3` to store the fetched data in a SQLite database.
 - **Data Manipulation**: Using `pandas` to manipulate and filter the data.
-- **Email Sending**: Using `pywin32` to send emails through Outlook.
+- **Email Sending**: Using `pywin32` to send emails through Outlook (Windows only).
 - **User Interface**: Using `Streamlit` to create a simple and interactive web interface.
 - **Automated Testing**: Using `pytest` for unit tests, integration tests, and performance tests to ensure the application works as expected.
 - **Benchmarking**: Using `pytest-benchmark` to measure and optimize the performance of the application components.
@@ -127,6 +140,8 @@ This project serves as an example of how to combine various Python functionaliti
 - **Integration Tests**: Verify that different parts of the application work together as expected.
 - **Performance Tests**: Check that key operations perform within acceptable time limits.
 - **Benchmarking Tests**: Measure the performance of various components to identify potential bottlenecks and areas for optimization.
+
+**Note**: Some functionalities and tests (such as email sending) are only supported on Windows. To test these features on other platforms, consider using a Windows environment or testing framework that supports Windows-specific features.
 
 The goal is to provide a comprehensive example of how to build a full-stack Python application that handles data from collection to presentation, with a focus on performance and reliability.
 

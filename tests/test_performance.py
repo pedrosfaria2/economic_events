@@ -2,7 +2,10 @@ import time
 import pytest
 from data_fetcher import fetch_economic_events
 from data_storer import store_events, get_events
-from email_sender import send_email
+import platform
+
+if platform.system() == "Windows":
+    from email_sender import send_email
 
 # Define acceptable time limits in seconds
 FETCH_EVENTS_TIME_LIMIT = 10  # Maximum acceptable time for fetching events
@@ -60,7 +63,7 @@ def test_get_events_performance():
     assert elapsed_time < GET_EVENTS_TIME_LIMIT, f"get_events took {elapsed_time} seconds, exceeding the limit of {GET_EVENTS_TIME_LIMIT} seconds"
     assert not events.empty  # Ensure the retrieved DataFrame is not empty
 
-# Test function for performance of sending an email
+@pytest.mark.skipif(platform.system() != "Windows", reason="Email sending is only supported on Windows.")
 def test_send_email_performance(mocker):
     """
     Test the performance of sending an email to ensure it completes within an acceptable time limit.

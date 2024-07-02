@@ -1,8 +1,10 @@
 import pytest
-import time
 from data_fetcher import fetch_economic_events
 from data_storer import store_events, get_events
-from email_sender import send_email
+import platform
+
+if platform.system() == "Windows":
+    from email_sender import send_email
 
 # Define the acceptable time limits in seconds
 FETCH_EVENTS_TIME_LIMIT = 10
@@ -37,7 +39,7 @@ def test_get_events_benchmark(benchmark):
     assert not result.empty
     assert len(result) > 0
 
-# Benchmark for sending email
+@pytest.mark.skipif(platform.system() != "Windows", reason="Email sending is only supported on Windows.")
 def test_send_email_benchmark(mocker, benchmark):
     test_events = [
         {

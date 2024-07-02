@@ -26,12 +26,16 @@ This project is a web scraping application built with Streamlit, designed to dem
 
 2. Create and activate a virtual environment:
 
+    ### On Windows
+
     ```bash
-    # On Windows
     python -m venv venv
     venv\Scripts\activate
+    ```
 
-    # On macOS and Linux
+    ### On macOS and Linux
+
+    ```bash
     python3 -m venv venv
     source venv/bin/activate
     ```

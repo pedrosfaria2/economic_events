@@ -24,7 +24,19 @@ This project is a web scraping application built with Streamlit, designed to dem
     cd economic_events
     ```
 
-2. Install the required packages:
+2. Create and activate a virtual environment:
+
+    ```bash
+    # On Windows
+    python -m venv venv
+    venv\Scripts\activate
+
+    # On macOS and Linux
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+
+3. Install the required packages:
 
     ```bash
     pip install -r requirements.txt

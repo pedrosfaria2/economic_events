@@ -9,6 +9,7 @@ from email_sender import send_email
 from chart_worker import plot_events_by_currency_and_volatility, plot_events_by_time_and_currency
 from st_aggrid import AgGrid, GridOptionsBuilder
 import os
+import platform
 
 # Function to configure the sidebar menu
 def sidebar_menu():
@@ -19,7 +20,9 @@ def sidebar_menu():
         choice (str): The selected menu option.
     """
     st.sidebar.title("Menu")
-    options = ["Home", "Fetch and Store Data", "View Stored Data", "Send Email"]
+    options = ["Home", "Fetch and Store Data", "View Stored Data"]
+    if platform.system() == "Windows":
+        options.append("Send Email")
     choice = st.sidebar.selectbox("Select an option", options)
     return choice
 
@@ -186,7 +189,7 @@ def main():
         fetch_store_data()
     elif choice == "View Stored Data":
         view_stored_data()
-    elif choice == "Send Email":
+    elif choice == "Send Email" and platform.system() == "Windows":
         send_email_section()
 
 # Entry point of the application

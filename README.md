@@ -19,8 +19,8 @@ This project is a web scraping application built with Streamlit, designed to dem
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/economic-events-dashboard.git
-    cd economic-events-dashboard
+    git clone https://github.com/pedrosfaria2/economic_events.git
+    cd economic_events
     ```
 
 2. Install the required packages:

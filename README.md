@@ -7,7 +7,7 @@ This project is a web scraping application built with Streamlit, designed to dem
 - **Fetch and Store Data**: Fetch economic events data from the web and store it in a SQLite database.
 - **View Stored Data**: View and filter stored economic events data in a tabular format.
 - **Send Email**: Send an email with today's economic events, including the option to customize the recipient, subject, and message.
-- **Automated Testing**: Unit tests to ensure the reliability and correctness of the application.
+- **Automated Testing**: Unit, integration, and performance tests to ensure the reliability and correctness of the application.
 
 ## Requirements
 
@@ -47,7 +47,7 @@ This project is a web scraping application built with Streamlit, designed to dem
     pytest
     ```
 
-    This will execute the unit tests located in the `tests` directory.
+    This will execute all the tests located in the `tests` directory.
 
 ## Project Structure
 
@@ -57,7 +57,7 @@ This project is a web scraping application built with Streamlit, designed to dem
 - `email_sender.py`: Contains functions to send emails with economic events data.
 - `requirements.txt`: Lists all the required Python packages.
 - `README.md`: Provides an overview of the project and instructions for setup and usage.
-- `tests/`: Directory containing unit tests for the application.
+- `tests/`: Directory containing unit, integration, and performance tests for the application.
 
 ## Overview
 
@@ -67,7 +67,13 @@ This project serves as an example of how to combine various Python functionaliti
 - **Data Manipulation**: Using `pandas` to manipulate and filter the data.
 - **Email Sending**: Using `pywin32` to send emails through Outlook.
 - **User Interface**: Using `Streamlit` to create a simple and interactive web interface.
-- **Automated Testing**: Using `pytest` to ensure the application works as expected.
+- **Automated Testing**: Using `pytest` for unit tests, integration tests, and performance tests to ensure the application works as expected.
+
+### Automated Testing
+
+- **Unit Tests**: Ensure individual functions work correctly.
+- **Integration Tests**: Verify that different parts of the application work together as expected.
+- **Performance Tests**: Check that key operations perform within acceptable time limits.
 
 The goal is to provide a comprehensive example of how to build a full-stack Python application that handles data from collection to presentation.
 

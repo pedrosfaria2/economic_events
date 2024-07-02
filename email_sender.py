@@ -1,6 +1,9 @@
-import win32com.client as win32
 from datetime import datetime
 import pythoncom
+import platform
+
+if platform.system() == "Windows":
+    import win32com.client as win32
 
 # Function to send an email with today's events
 def send_email(events_today, recipient, subject, message):

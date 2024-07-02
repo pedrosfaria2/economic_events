@@ -8,6 +8,7 @@ from data_storer import store_events, get_events
 from email_sender import send_email
 from chart_worker import plot_events_by_currency_and_volatility, plot_events_by_time_and_currency
 from st_aggrid import AgGrid, GridOptionsBuilder
+import os
 
 # Function to configure the sidebar menu
 def sidebar_menu():

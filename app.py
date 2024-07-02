@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+from threading import Thread
 from data_fetcher import fetch_economic_events
 from data_storer import store_events, get_events
 from email_sender import send_email
@@ -31,35 +32,38 @@ def home():
     # Fetch events from the database
     df = get_events()
     today_str = datetime.now().strftime('%m/%d/%y')
-    events_today = df[df['Date'] == today_str]
+    if not df.empty:
+        events_today = df[df['Date'] == today_str]
 
-    if not events_today.empty:
-        # Display filter options
-        with st.expander("Filter Options", expanded=True):
-            # Filter options for today's events
-            currencies = st.multiselect("Select Currencies", options=events_today["Currency"].unique(), default=events_today["Currency"].unique())
-            volatilities = st.multiselect("Select Volatility Levels", options=events_today["Volatility"].unique(), default=events_today["Volatility"].unique())
+        if not events_today.empty:
+            # Display filter options
+            with st.expander("Filter Options", expanded=True):
+                # Filter options for today's events
+                currencies = st.multiselect("Select Currencies", options=events_today["Currency"].unique(), default=events_today["Currency"].unique())
+                volatilities = st.multiselect("Select Volatility Levels", options=events_today["Volatility"].unique(), default=events_today["Volatility"].unique())
 
-            # Apply filters to the data
-            filtered_df = events_today[(events_today["Currency"].isin(currencies)) & (events_today["Volatility"].isin(volatilities))]
+                # Apply filters to the data
+                filtered_df = events_today[(events_today["Currency"].isin(currencies)) & (events_today["Volatility"].isin(volatilities))]
 
-        st.write("### Filtered Economic Events Data")
-        # Display the filtered data in a table
-        gb = GridOptionsBuilder.from_dataframe(filtered_df)
-        gb.configure_pagination(paginationAutoPageSize=True)
-        gb.configure_side_bar()
-        gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True)
-        gridOptions = gb.build()
+            st.write("### Filtered Economic Events Data")
+            # Display the filtered data in a table
+            gb = GridOptionsBuilder.from_dataframe(filtered_df)
+            gb.configure_pagination(paginationAutoPageSize=True)
+            gb.configure_side_bar()
+            gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True)
+            gridOptions = gb.build()
 
-        # Display the data table
-        AgGrid(filtered_df, gridOptions=gridOptions, enable_enterprise_modules=True, height=600, theme='streamlit')
-        
-        # Create interactive plots
-        st.markdown("### Interactive Charts")
-        plot_events_by_currency_and_volatility(filtered_df)
-        plot_events_by_time_and_currency(filtered_df)
+            # Display the data table
+            AgGrid(filtered_df, gridOptions=gridOptions, enable_enterprise_modules=True, height=600, theme='streamlit')
+            
+            # Create interactive plots
+            st.markdown("### Interactive Charts")
+            plot_events_by_currency_and_volatility(filtered_df)
+            plot_events_by_time_and_currency(filtered_df)
+        else:
+            st.info("No events for today.")
     else:
-        st.info("No events for today.")
+        st.info("No data available. Please fetch data first.")
 
 # Function for the fetch and store data section
 def fetch_store_data():
@@ -85,32 +89,38 @@ def view_stored_data():
     # Fetch events from the database
     df = get_events()
 
-    # Display filter options
-    with st.expander("Filter Options", expanded=True):
-        # Filter options for stored events
-        currencies = st.multiselect("Select Currencies", options=df["Currency"].unique(), default=df["Currency"].unique())
-        volatilities = st.multiselect("Select Volatility Levels", options=df["Volatility"].unique(), default=df["Volatility"].unique())
-        start_date = st.date_input("Start Date", min_value=datetime.strptime(df["Date"].min(), "%m/%d/%y"), value=datetime.strptime(df["Date"].min(), "%m/%d/%y"))
-        end_date = st.date_input("End Date", min_value=datetime.strptime(df["Date"].min(), "%m/%d/%y"), value=datetime.today())
+    if not df.empty:
+        # Display filter options
+        with st.expander("Filter Options", expanded=True):
+            # Filter options for stored events
+            currencies = st.multiselect("Select Currencies", options=df["Currency"].unique(), default=df["Currency"].unique())
+            volatilities = st.multiselect("Select Volatility Levels", options=df["Volatility"].unique(), default=df["Volatility"].unique())
+            try:
+                start_date = st.date_input("Start Date", min_value=datetime.strptime(df["Date"].min(), "%m/%d/%y"), value=datetime.strptime(df["Date"].min(), "%m/%d/%y"))
+                end_date = st.date_input("End Date", min_value=datetime.strptime(df["Date"].min(), "%m/%d/%y"), value=datetime.today())
+            except ValueError:
+                st.error("Date format is incorrect. Please check your data.")
 
-        # Apply filters to the data
-        filtered_df = df[(df["Currency"].isin(currencies)) & (df["Volatility"].isin(volatilities)) & (df["Date"] >= start_date.strftime("%m/%d/%y")) & (df["Date"] <= end_date.strftime("%m/%d/%y"))].copy()
+            # Apply filters to the data
+            filtered_df = df[(df["Currency"].isin(currencies)) & (df["Volatility"].isin(volatilities)) & (df["Date"] >= start_date.strftime("%m/%d/%y")) & (df["Date"] <= end_date.strftime("%m/%d/%y"))].copy()
 
-    st.write("### Filtered Economic Events Data")
-    # Display the filtered data in a table
-    gb = GridOptionsBuilder.from_dataframe(filtered_df)
-    gb.configure_pagination(paginationAutoPageSize=True)
-    gb.configure_side_bar()
-    gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True)
-    gridOptions = gb.build()
+        st.write("### Filtered Economic Events Data")
+        # Display the filtered data in a table
+        gb = GridOptionsBuilder.from_dataframe(filtered_df)
+        gb.configure_pagination(paginationAutoPageSize=True)
+        gb.configure_side_bar()
+        gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc="sum", editable=True)
+        gridOptions = gb.build()
 
-    # Display the data table
-    AgGrid(filtered_df, gridOptions=gridOptions, enable_enterprise_modules=True, height=600, theme='streamlit')
-    
-    # Create interactive plots
-    st.markdown("### Interactive Charts")
-    plot_events_by_currency_and_volatility(filtered_df)
-    plot_events_by_time_and_currency(filtered_df)
+        # Display the data table
+        AgGrid(filtered_df, gridOptions=gridOptions, enable_enterprise_modules=True, height=600, theme='streamlit')
+        
+        # Create interactive plots
+        st.markdown("### Interactive Charts")
+        plot_events_by_currency_and_volatility(filtered_df)
+        plot_events_by_time_and_currency(filtered_df)
+    else:
+        st.info("No data available. Please fetch data first.")
 
 # Function for the send email section
 def send_email_section():
@@ -132,14 +142,25 @@ def send_email_section():
         # Fetch today's events from the database
         df = get_events()
         today_str = datetime.now().strftime('%m/%d/%y')
-        events_today = df[df['Date'] == today_str]
-        
-        if not events_today.empty:
-            # Send the email with today's events
-            status = send_email(events_today.to_dict('records'), recipient, subject, message)
-            st.success(status)
+        if not df.empty:
+            events_today = df[df['Date'] == today_str]
+            
+            if not events_today.empty:
+                # Send the email with today's events
+                status = send_email(events_today.to_dict('records'), recipient, subject, message)
+                st.success(status)
+            else:
+                st.warning('No events for today.')
         else:
-            st.warning('No events for today.')
+            st.warning('No data available to send.')
+
+# Function to automatically fetch and store data
+def auto_fetch_store_data():
+    """
+    Automatically fetch and store economic events data at startup.
+    """
+    events = fetch_economic_events()
+    store_events(events)
 
 # Main configuration of the application
 def main():
@@ -148,7 +169,11 @@ def main():
     """
     # Configure the Streamlit page settings
     st.set_page_config(page_title="Economic Events Dashboard", layout="wide", initial_sidebar_state="expanded")
-    
+
+    # Start a thread to automatically fetch and store data at startup
+    thread = Thread(target=auto_fetch_store_data)
+    thread.start()
+
     # Get the user's menu choice
     choice = sidebar_menu()
     
